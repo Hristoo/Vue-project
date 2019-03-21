@@ -121,28 +121,82 @@ i{
 }
 .hero-img{
     width: 100%;
-    height: auto;
+    height: 850px;
+}
+
+
+.list-complete {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+}
+.list-complete-item {
+  transition: transform 1s;
+  flex: 1 1 25%;
+  height: 200px;
+  max-width: 25%;
+  padding: 10px;
+/*   display: inline-block;
+  margin-right: 10px; */
+}
+.list-complete-img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+.list-complete-enter, .list-complete-leave-to
+/* .list-complete-leave-active for <2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-complete-leave-active {
+  position: absolute;
 }
     </style>
   </head>
   <body>
     <!-- Our application root element -->
     <div id="app">
-            <nav v-bind:class="active" v-on:click.prevent>
+      <nav v-bind:class="active" v-on:click.prevent>
 
-                    <!-- When a link in the menu is clicked, we call the makeActive method, 
-                    defined in the JavaScript Vue instance. It will change the value of "active". -->
+          <!-- When a link in the menu is clicked, we call the makeActive method, 
+          defined in the JavaScript Vue instance. It will change the value of "active". -->
             
-                    <a href="#" class="home" v-on:click="makeActive('home')"><i class="fa fa-home fa-lg"></i> Начало</a>
-                    <a href="#" class="projects" v-on:click="makeActive('projects')"><i class="fa fa-folder-open fa-lg"></i> Проекти</a>
-                    <a href="#" class="services" v-on:click="makeActive('services')"><i class="fa fa-shopping-cart fa-lg"></i> Услуги</a>
-                    <a href="#" class="contact" v-on:click="makeActive('contact')"><i class="fa fa-envelope fa-lg"></i> Контакти</a>                  
-                </nav>
-      
-        <img src="tim.jpg" alt="img" class="hero-img"/>
+        <a href="#" class="home" v-on:click="makeActive('home')"><i class="fa fa-home fa-lg"></i> Начало</a>
+        <a href="#" class="projects" v-on:click="makeActive('projects')"><i class="fa fa-folder-open fa-lg"></i> Проекти</a>
+        <a href="#" class="services" v-on:click="makeActive('services')"><i class="fa fa-shopping-cart fa-lg"></i> Услуги</a>
+        <a href="#" class="contact" v-on:click="makeActive('contact')"><i class="fa fa-envelope fa-lg"></i> Контакти</a>                  
+      </nav>
+      <div class="container">
 
+        <img src="img.jpg" alt="img" class="hero-img" style="margin: 20px"/>
+
+        <div id="list-complete" class="demo" style="margin-top: 20px; margin-bottom: 20px; padding: 10px; background-color: #e4e4e4;">
+          
+          <button class="btn" v-on:click="filter('all')">Всички</button>
+          <button class="btn" v-on:click="filter('tag1')">Български</button>
+          <button class="btn" v-on:click="filter('tag2')">Английски</button>
+          <transition-group name="list-complete"
+            class="list-complete"      tag="section">
+            <div
+              v-for="item in filteredItems"
+              v-bind:key="item.id"
+              class="list-complete-item"
+            >
+              <img class="list-complete-img" :src="item.img" alt="" />
+            </span>
+          </transition-group>
+        </div>
 
         
+      </div>
+
+
+      <img src="img.jpg" alt="img" class="hero-img"/>
+
+
         
       <footer class="footer">
         <div class="b-container">
@@ -176,6 +230,37 @@ i{
         computed: {
           showAlert() {
             return this.name.length > 4 ? true : false
+          }
+        },
+
+        el: '#list-complete',
+        data: {
+          items: [
+            { id: 1, tags: ['all', 'tag3'], img: 'http://hid.thelocalsearches.com/wp-content/uploads/2018/02/ili1-1.jpg'},
+            { id: 2, tags: ['all', 'tag2'], img: 'http://hid.thelocalsearches.com/wp-content/uploads/2018/02/Jonas.jpg'},
+            { id: 3, tags: ['all', 'tag1'], img: 'http://hid.thelocalsearches.com/wp-content/uploads/2018/02/parking.jpg' },
+            { id: 4, tags: ['all', 'tag1'], img: 'http://hid.thelocalsearches.com/wp-content/uploads/2018/06/rabotavanglia1.jpg' },
+            { id: 5, tags: ['all', 'tag2'], img: 'http://hid.thelocalsearches.com/wp-content/uploads/2018/02/joansremovalsbethnalgreen.jpg' },
+            { id: 6, tags: ['all', 'tag2'], img: 'http://hid.thelocalsearches.com/wp-content/uploads/2018/05/cleaningcompanycanarywharf.co_.uk_.jpg' },
+            { id: 7, tags: ['all', 'tag1'], img: 'https://scontent-sof1-1.xx.fbcdn.net/v/t1.0-9/33525792_198087317672251_7691889413244059648_o.png?_nc_cat=100&_nc_ht=scontent-sof1-1.xx&oh=f514e00a34749e7d5bdf7069a15930f0&oe=5D0C0C13' },
+            { id: 8, tags: ['all', 'tag2'], img: 'http://hid.thelocalsearches.com/wp-content/uploads/2018/02/Jonas.jpg' },
+          ],
+          currentTag: 'all'
+        },
+        computed: {
+          filteredItems: function() {
+            var filter = this.currentTag;
+            return this.items.filter(function(item) {
+                return item.tags.indexOf(filter) !== -1;
+            });
+          }
+        },
+        methods: {
+          shuffle: function () {
+            this.items = _.shuffle(this.items)
+          },
+          filter: function(tag) {
+            this.currentTag = tag;
           }
         }
       })
